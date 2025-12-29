@@ -1,0 +1,47 @@
+### Get all films
+GET http://localhost:8080/api/films
+
+###
+
+### Get film by ID
+GET http://localhost:8080/api/films/1
+
+###
+
+### Create a new film
+POST http://localhost:8080/api/films
+Content-Type: application/json
+
+{
+  "title": "The Shawshank Redemption",
+  "year": 1994,
+  "hourDuration": 2,
+  "minuteDuration": 22,
+  "resume": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."
+}
+
+###
+
+### Update a film
+PUT http://localhost:8080/api/films/1
+Content-Type: application/json
+
+{
+  "title": "The Godfather",
+  "year": 1972,
+  "hourDuration": 2,
+  "minuteDuration": 55,
+  "resume": "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son."
+}
+
+###
+
+### Get films by year
+GET http://localhost:8080/api/films/year/1994
+
+###
+
+### Delete a film
+DELETE http://localhost:8080/api/films/1
+
+###
