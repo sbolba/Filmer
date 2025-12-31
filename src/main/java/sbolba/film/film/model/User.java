@@ -1,40 +1,31 @@
 package sbolba.film.film.model;
 
-import java.util.Objects;
+import java.sql.Date;
+import java.sql.Timestamp;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     private int id;
     private String username;
     private String password;
-
-    public User(int id, String username, String password) {
-        Objects.requireNonNull(id, "id is null");
-        Objects.requireNonNull(username, "username is null");
-        Objects.requireNonNull(password, "password is null");
-        this.id = id;
-        this.username = username;
-        this.password = password;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }   
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    private String email;
+    private String firstName;
+    private String lastName;
+    private String avatarUrl;
+    private String bio;
+    private Date dateOfBirth;
+    private String phoneNumber;
+    private Boolean isActive;
+    private Boolean isVerified;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+    private Timestamp lastLogin;
 
 }

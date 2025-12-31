@@ -3,6 +3,9 @@ package sbolba.film.film.model;
 import java.util.List;
 import java.util.Objects;
 
+import lombok.Data;
+
+@Data
 public class Film {
     private int id;
     private String title;
@@ -73,75 +76,6 @@ public class Film {
         this.minuteDuration = minuteDuration;
         this.performers = performers;
         this.resume = resume;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public int getHourDuration() {
-        return hourDuration;
-    }
-
-    public int getMinuteDuration() {
-        return minuteDuration;
-    }
-
-    public List<Performer> getPerformers() {
-        return performers;
-    }
-
-    public String getResume() {
-        return resume;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public void setHourDuration(int hourDuration) {
-        this.hourDuration = hourDuration;
-    }
-
-    public void setMinuteDuration(int minuteDuration) {
-        this.minuteDuration = minuteDuration;
-    }
-
-    public void setPerformers(List<Performer> performers) {
-        this.performers = performers;
-    }
-
-    public void setResume(String resume) {
-        this.resume = resume;
-    }
-
-    @Override
-    public String toString() {
-        return "Film{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", year=" + year +
-                ", hourDuration=" + hourDuration +
-                ", minuteDuration=" + minuteDuration +
-                (performers.size() == 0 ? "" : ", performers=" + performers  ) +
-                (resume.isBlank() ? "" : ", resume='" + resume + '\'' )+
-                '}';
     }
 
 }

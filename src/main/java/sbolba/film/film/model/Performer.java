@@ -1,5 +1,8 @@
 package sbolba.film.film.model;
 
+import lombok.Data;
+
+@Data
 public class Performer {
     private Actor actor;
     private String role;
@@ -9,19 +12,4 @@ public class Performer {
         this.role = role;
     }
 
-    public Actor getActor() {
-        return actor;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setActor(Actor actor) {
-        this.actor = actor;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 }

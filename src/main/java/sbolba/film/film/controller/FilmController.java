@@ -41,10 +41,15 @@ public class FilmController {
         return filmService.createFilm(film);
     }
 
-    // PUT update film
-    @PutMapping("/update/{film}")
-    public boolean updateFilm(@PathVariable Film film) {
-        return filmService.updateFilm(film);
+     // PUT update film
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateFilm(@PathVariable int id, @RequestBody Film film) {
+        film.setId(id);
+        boolean updated = filmService.updateFilm(film);
+        if (updated) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     // DELETE film

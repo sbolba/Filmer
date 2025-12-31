@@ -44,4 +44,11 @@ GET http://localhost:8080/api/films/year/1994
 ### Delete a film
 DELETE http://localhost:8080/api/films/1
 
-###
+### Utente corrente autenticato
+GET http://localhost:8080/api/users/me
+
+### Utente specifico per username
+GET http://localhost:8080/api/users/sbolba
+
+### Tutti gli utenti con ruolo ADMIN
+GET http://localhost:8080/api/users/by-role/ADMIN

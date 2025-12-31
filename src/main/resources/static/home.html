@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Home — Filmer</title>
+    <link rel="stylesheet" href="/css/home.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div style="display:flex;gap:18px;align-items:center">
+                <div class="logo">Filmer</div>
+                <div style="color:var(--muted);font-size:14px;padding-left:1rem;">Find your next watch</div>
+            </div>
+            <div class="controls">
+                <input id="titleInput" class="input" placeholder="Filter by film title..." />
+                <input id="actorInput" class="input" placeholder="Filter by actor..." />
+                
+                <div style="position: relative;">
+                    <div class="select-button" id="selectButton">
+                        <div class="selected-option">
+                            <span class="emoji" id="selectedEmoji"></span>
+                            <span class="option-text" id="selectedText">Select your mood</span>
+                        </div>
+                    </div>
+
+                    <div class="options-list" id="optionsList">
+                        <div class="option-item" data-emoji="😊" data-label="HAPPY">
+                            <span class="option-emoji">😊</span>
+                            <span class="option-label">HAPPY</span>
+                        </div>
+                        <div class="option-item" data-emoji="😪" data-label="SAD">
+                            <span class="option-emoji">😪</span>
+                            <span class="option-label">SAD</span>
+                        </div>
+                        <div class="option-item" data-emoji="🤩" data-label="EXCITED">
+                            <span class="option-emoji">🤩</span>
+                            <span class="option-label">EXCITED</span>
+                        </div>
+                        <div class="option-item" data-emoji="😎" data-label="RELAXED">
+                            <span class="option-emoji">😎</span>
+                            <span class="option-label">RELAXED</span>
+                        </div>
+                        <div class="option-item" data-emoji="😯" data-label="SCARY">
+                            <span class="option-emoji">😯</span>
+                            <span class="option-label">SCARY</span>
+                        </div>
+                        <div class="option-item" data-emoji="😍" data-label="ROMANTIC">
+                            <span class="option-emoji">😍</span>
+                            <span class="option-label">ROMANTIC</span>
+                        </div>
+                        <div class="option-item" data-emoji="😰" data-label="ANXIOUS">
+                            <span class="option-emoji">😰</span>
+                            <span class="option-label">ANXIOUS</span>
+                        </div>
+                        <div class="option-item" data-emoji="🤠" data-label="ADVENTUROUS">
+                            <span class="option-emoji">🤠</span>
+                            <span class="option-label">ADVENTUROUS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="edit" class="edit" style="display:none">
+                <a href="/edit.html" style="color:var(--accent);text-decoration:none;font-weight:600">Edit Films</a>
+            </div>
+            <a id="loginBtn" class="login" href="/login.html">Login</a>
+            <div id="userInfo" style="display:none;color:var(--text);font-size:14px">
+                <span id="userName"></span>
+                <a href="/logout" style="margin-left:1rem;color:var(--accent);text-decoration:none">Logout</a>
+            </div>
+        </div>
+
+        <div id="grid" class="grid"></div>
+        <div id="empty" class="empty" style="display:none">No films match the filters.</div>
+    </div>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

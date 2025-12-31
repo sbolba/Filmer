@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica Film</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Modifica Film</h1>
+        <form id="editForm">
+            <input type="hidden" id="filmId">
+            
+            <label for="title">Titolo:</label>
+            <input type="text" id="title" required>
+            
+            <label for="year">Anno:</label>
+            <input type="number" id="year" required>
+            
+            <label for="hourDuration">Ore:</label>
+            <input type="number" id="hourDuration" min="0" required>
+            
+            <label for="minuteDuration">Minuti:</label>
+            <input type="number" id="minuteDuration" min="0" max="59" required>
+            
+            <label for="resume">Descrizione:</label>
+            <textarea id="resume" rows="4"></textarea>
+            
+            <div class="buttons">
+                <button type="submit">Salva Modifiche</button>
+                <button type="button" onclick="window.location.href='/home.html'">Annulla</button>
+            </div>
+        </form>
+    </div>
+    <script src="/js/edit-film.js"></script>
+</body>
+</html>
