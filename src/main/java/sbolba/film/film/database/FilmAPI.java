@@ -1,34 +1,64 @@
 package sbolba.film.film.database;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.List;
+
+/**
+ * Classe per operazioni database personalizzate.
+ * Usa JdbcTemplate con HikariCP connection pooling per scalabilità.
+ */
+@Component
 public class FilmAPI {
-    private JDBCConnection connection = new JDBCConnection();
     
-    // Check database connection
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    
+    @Autowired
+    private DataSource dataSource;
+    
+    /**
+     * Verifica la connessione al database usando il connection pool.
+     * Non crea nuove connessioni, riusa quelle del pool.
+     */
     public boolean testConnection() {
-        try (Connection conn = connection.getConnection()) {
-            return conn != null && !conn.isClosed();
-        } catch (SQLException e) {
+        try {
+            jdbcTemplate.queryForObject("SELECT 1", Integer.class);
+            return true;
+        } catch (Exception e) {
             return false;
         }
     }
     
-    // Execute custom query
-    public List<String> getFilmTitles() throws SQLException {
-        List<String> titles = new ArrayList<>();
-        try (Connection conn = connection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT title FROM films")) {
-            while (rs.next()) {
-                titles.add(rs.getString("title"));
-            }
+    /**
+     * Ottiene tutti i titoli dei film.
+     * Usa PreparedStatement automaticamente tramite JdbcTemplate per sicurezza.
+     */
+    public List<String> getFilmTitles() {
+        String sql = "SELECT title FROM films.film";
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+    
+    /**
+     * Ottiene il numero di connessioni attive nel pool HikariCP.
+     * Utile per monitoring e debugging.
+     */
+    public String getConnectionPoolStats() {
+        try {
+            com.zaxxer.hikari.HikariDataSource hikari = (com.zaxxer.hikari.HikariDataSource) dataSource;
+            return String.format("Pool: %s | Active: %d | Idle: %d | Total: %d | Waiting: %d",
+                hikari.getPoolName(),
+                hikari.getHikariPoolMXBean().getActiveConnections(),
+                hikari.getHikariPoolMXBean().getIdleConnections(),
+                hikari.getHikariPoolMXBean().getTotalConnections(),
+                hikari.getHikariPoolMXBean().getThreadsAwaitingConnection()
+            );
+        } catch (Exception e) {
+            return "Unable to get pool stats: " + e.getMessage();
         }
-        return titles;
     }
 }
