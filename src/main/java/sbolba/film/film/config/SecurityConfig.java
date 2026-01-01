@@ -27,6 +27,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/home.html", "/login.html", "/css/**", "/js/**", "/api/films/**", "/api/auth/**").permitAll()
                 .requestMatchers("/api/users/**").permitAll()
+                .requestMatchers("/api/health/**").permitAll()  // Permette health checks
                 .requestMatchers("/edit.html").authenticated()  // Protegge pagina di editing
                 .anyRequest().authenticated()
             )

@@ -28,8 +28,19 @@ public class AuthController {
         String email = request.get("email");
         String password = request.get("password");
 
+        // Validazione input
         if (email == null || password == null || name == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "All fields are required"));
+        }
+        
+        // Validazione robustezza password
+        if (password.length() < 8) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Password must be at least 8 characters"));
+        }
+        
+        // Validazione formato email
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid email format"));
         }
         
         // Verifica se l'email esiste già
@@ -38,7 +49,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of("error", "Email already exists"));
         }
 
-        // Crea nuovo utente
+        // Crea nuovo utente - la password viene criptata automaticamente nel service
         User newUser = userService.registerUser(name, email, password);
         
         return ResponseEntity.ok(Map.of(
@@ -52,10 +63,16 @@ public class AuthController {
         String email = request.get("email");
         String password = request.get("password");
 
+        // Validazione input
         if (email == null || password == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Email and password are required"));
         }
+        
+        if (password.isEmpty() || email.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email and password cannot be empty"));
+        }
 
+        // La password in chiaro viene confrontata con quella hashata nel service usando BCrypt
         User user = userService.authenticateUser(email, password);
         
         if (user == null) {

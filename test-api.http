@@ -44,6 +44,18 @@ GET http://localhost:8080/api/films/year/1994
 ### Delete a film
 DELETE http://localhost:8080/api/films/1
 
+###
+
+### Health Check - Verifica stato sistema
+GET http://localhost:8080/api/health
+
+###
+
+### Connection Pool Stats - Monitoring HikariCP
+GET http://localhost:8080/api/health/pool
+
+###
+
 ### Utente corrente autenticato
 GET http://localhost:8080/api/users/me
 
