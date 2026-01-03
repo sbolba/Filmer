@@ -25,22 +25,21 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/home.html", "/login.html", "/css/**", "/js/**", "/api/films/**", "/api/auth/**").permitAll()
-                .requestMatchers("/api/users/**").permitAll()
-                .requestMatchers("/api/health/**").permitAll()  // Permette health checks
-                .requestMatchers("/edit.html").authenticated()  // Protegge pagina di editing
+                .requestMatchers("/", "/home.html", "/login.html", "/css/**", "/js/**", "/api/films/**", "/api/auth/**", "/api/users/**", "/api/health/**").permitAll()
+                .requestMatchers("/edit.html").authenticated()  //only users with role DIRECTOR can access edit.html
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/login.html")
-                .defaultSuccessUrl("/home.html", true)
+                .defaultSuccessUrl("/home.html", true) //if login is successful, redirect to home.html
                 .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
-                .failureUrl("/login.html?error=true")
+                .failureUrl("/login.html?error=true") //if login fails, redirect to login.html with error param
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/login.html")
+                .logoutSuccessUrl("/login.html") //logout always redirects to login page
                 .permitAll()
-            );
+            )
+            .anonymous(anonymous -> anonymous.disable()); // Disabilita anonymous authentication
         return http.build();
     }
 }

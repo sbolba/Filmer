@@ -12,6 +12,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.core.ParameterizedTypeReference;
 
 import sbolba.film.film.repository.UserRepository;
 import sbolba.film.film.repository.RoleRepository;
@@ -32,12 +33,14 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        //contact the provider with the access token and get the user info
         OAuth2User oAuth2User = super.loadUser(userRequest);
         
+        //get the provider and the email
         String provider = userRequest.getClientRegistration().getRegistrationId();
         String email = processOAuthPostLogin(oAuth2User, provider, userRequest);
         
-        // Se l'email non era negli attributi originali, crea un nuovo OAuth2User con l'email
+        //if the email was not in the attributes provided by GitHub, create a new OAuth2User with the added email
         if (email != null && oAuth2User.getAttribute("email") == null) {
             Map<String, Object> attributes = new HashMap<>(oAuth2User.getAttributes());
             attributes.put("email", email);
@@ -56,24 +59,25 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
         
-        // GitHub usa "avatar_url", Google usa "picture"
+        //get google/github specific picture/avatar_url attribute
         String picture = "github".equals(provider) 
             ? oAuth2User.getAttribute("avatar_url")
             : oAuth2User.getAttribute("picture");
         
-        // GitHub: se email è null, richiedila tramite API
+        //GitHub: try to fetch email via separate API if not present
         if (email == null && "github".equals(provider)) {
             email = fetchGitHubEmail(userRequest);
         }
         
-        // Se email è ancora null, blocca il login
+        //if email is still null, block login (email not available)
         if (email == null) {
             throw new OAuth2AuthenticationException("Email not available from OAuth provider. Please make your email public in GitHub settings.");
         }
         
-        // Cerca utente esistente
+        // find existing user
         User existingUser = userRepository.findByEmail(email);
 
+        //if user not exists, create new user, else update existing user
         if (existingUser == null) {
             User newUser = new User();
             newUser.setEmail(email);
@@ -106,25 +110,31 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
     private String fetchGitHubEmail(OAuth2UserRequest userRequest) {
         try {
+            //emails getter API from GitHub API docs
             String emailsUrl = "https://api.github.com/user/emails";
+            //Oauth2 access token
             String accessToken = userRequest.getAccessToken().getTokenValue();
             
+            //create a "browser" to call the API
             RestTemplate restTemplate = new RestTemplate();
+            //set the metadata information in order to get the right data from the browser
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + accessToken);
             headers.set("Accept", "application/vnd.github.v3+json");
             
+            //call the API and receive the informations needed (response)
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<List> response = restTemplate.exchange(
+            ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
                 emailsUrl, 
                 HttpMethod.GET, 
                 entity, 
-                List.class
+                new ParameterizedTypeReference<List<Map<String, Object>>>() {}
             );
             
+            //get the body (emails) of the response
             List<Map<String, Object>> emails = response.getBody();
             if (emails != null) {
-                // Cerca l'email primaria
+                // get primary verified email
                 for (Map<String, Object> emailObj : emails) {
                     Boolean primary = (Boolean) emailObj.get("primary");
                     Boolean verified = (Boolean) emailObj.get("verified");
@@ -132,7 +142,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                         return (String) emailObj.get("email");
                     }
                 }
-                // Se non c'è primaria, prendi la prima verificata
+                // if no primary, get the first verified
                 for (Map<String, Object> emailObj : emails) {
                     Boolean verified = (Boolean) emailObj.get("verified");
                     if (Boolean.TRUE.equals(verified)) {
@@ -146,6 +156,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         return null;
     }
 
+    //ausiliar methods to split name into first name and last name
     private String getFirstName(String name) {
         if (name == null || name.isBlank()) {
             return "";
