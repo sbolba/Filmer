@@ -1,6 +1,9 @@
 package sbolba.film.film.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -54,11 +57,13 @@ public class FilmRepository {
         }
     };
 
+    @Cacheable(value = "films")
     public List<Film> findAll() {
         String sql = "SELECT * FROM films.film";
         return jdbcTemplate.query(sql, filmRowMapper);
     }
 
+    @Cacheable(value = "film", key = "#id")
     public Film findById(int id) {
         String sql = "SELECT * FROM films.film WHERE idfilm = ?";
         List<Film> films = jdbcTemplate.query(sql, filmRowMapper, id);
@@ -66,6 +71,7 @@ public class FilmRepository {
     }
 
     //without performers list
+    @CacheEvict(value = {"films", "film"}, allEntries = true)
     public boolean save(Film film) {
         String sql = "INSERT INTO films.film (title, year, hourduration, minuteduration, resume) VALUES (?, ?, ?, ?, ?)";
         
@@ -83,6 +89,8 @@ public class FilmRepository {
         return false;
     }
 
+    @CachePut(value = "film", key = "#film.id")
+    @CacheEvict(value = "films", allEntries = true)
     public boolean update(Film film) {
         String sql = "UPDATE films.film SET title = ?, year = ?, hourduration = ?, minuteduration = ?, resume = ? WHERE idfilm = ?";
         int rowsAffected = jdbcTemplate.update(sql, 
@@ -96,12 +104,14 @@ public class FilmRepository {
         return rowsAffected > 0;
     }
 
+    @CacheEvict(value = {"films", "film"}, key = "#id")
     public boolean deleteById(int id) {
         String sql = "DELETE FROM films.film WHERE idfilm = ?";
         int rowsAffected = jdbcTemplate.update(sql, id);
         return rowsAffected > 0;
     }
 
+    @Cacheable(value = "filmsByYear", key = "#year")
     public List<Film> findByYear(int year) {
         String sql = "SELECT * FROM films.film WHERE year = ?";
         return jdbcTemplate.query(sql, filmRowMapper, year);

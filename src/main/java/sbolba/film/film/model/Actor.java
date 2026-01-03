@@ -12,6 +12,9 @@ public class Actor {
     private Date dateOfBirth;
     private String role;
 
+    public Actor() {
+    }
+
     public Actor(String name, String surname, Date dateOfBirth) {
         this.name = name;
         this.surname = surname;

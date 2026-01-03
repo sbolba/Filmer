@@ -46,6 +46,8 @@ DELETE http://localhost:8080/api/films/1
 
 ###
 
+### Health Check - Verifica stato sistema###
+
 ### Health Check - Verifica stato sistema
 GET http://localhost:8080/api/health
 
@@ -56,8 +58,7 @@ GET http://localhost:8080/api/health/pool
 
 ###
 
-### Utente corrente autenticato
-GET http://localhost:8080/api/users/me
+api/users/me
 
 ### Utente specifico per username
 GET http://localhost:8080/api/users/sbolba
